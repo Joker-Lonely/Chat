@@ -98,9 +98,11 @@ public class ServerThread extends Thread {
             if (msg.isFlag()) {
                 // 将该线程加入连接成功的map集合
                 SocketThread socketThread = new SocketThread();
-                socketThread.setName(msg.getSender());
+                socketThread.setid(msg.getSender());
                 socketThread.setSocket(socket);
                 SocketList.addSocket(socketThread);
+                msg.setReceiver(userService.Findusername(user));
+                msg.setData(userService.getfriends(user));
                 msg.setResult("登陆成功");
             } else {
                 msg.setResult("账号密码输入错误！");

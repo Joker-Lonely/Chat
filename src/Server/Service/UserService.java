@@ -1,10 +1,9 @@
 package Server.Service;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import Com.User;
 
@@ -101,4 +100,67 @@ public class UserService {
         }
         return true;
     }
+    public String Findusername(User user){
+        String name = "";
+        PreparedStatement stmt = null;
+        Connection conn =null;
+        ResultSet rs = null;
+        conn = DBHelper.getConnection();
+        String sql = "select Username from User where Userid=?";
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, user.getUserid());
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                name = rs.getString(1);
+                return name;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return name;
+    }
+    public List<String> getfriends(User user){
+        List<String> friends = new ArrayList<String>();
+        PreparedStatement stmt = null;
+        Connection conn =null;
+        ResultSet rs = null;
+        conn = DBHelper.getConnection();
+        String sql = "select friend_id from friend_list where id=?";
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, user.getUserid());
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                friends.add(rs.getString(1));
+            }
+            return friends;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return friends;
+    }
+
 }

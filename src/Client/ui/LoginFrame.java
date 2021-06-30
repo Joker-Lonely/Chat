@@ -6,6 +6,7 @@ import Com.User;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -63,7 +64,7 @@ public class LoginFrame extends JFrame {
         //设置位置、大小
         lblUid.setBounds(80, 60, 120, 30);
         lblUid.setFont(new Font("宋体" , 0 , 16));
-        //设置标签文本的颜色为白色
+        //设置标签文本的颜色为黑色
         lblUid.setForeground(Color.BLACK);
         //将标签添加到背景图片上
         lblBackground.add(lblUid);
@@ -76,7 +77,7 @@ public class LoginFrame extends JFrame {
         //设置标签的位置、大小
         lblPsw.setBounds(80, 100, 120, 30);
         lblPsw.setFont(new Font("宋体" , 0 , 16));
-        //设置字体颜色为白色
+        //设置字体颜色为黑色
         lblPsw.setForeground(Color.BLACK);
         //添加到背景图片上
         lblBackground.add(lblPsw);
@@ -105,7 +106,7 @@ public class LoginFrame extends JFrame {
         setLayout(null);
         setVisible(true);
 
-        textUid.setText("test");
+        textUid.setText("test1");
         textPsw.setText("123456");
     }
 
@@ -134,9 +135,10 @@ public class LoginFrame extends JFrame {
             if (msg != null) {
                 if (msg.isFlag()) {
                     this.dispose();
+                    List<String> friends = (List<String>) msg.getData();
                     JOptionPane.showMessageDialog(null, "登陆成功！");
                     //显示好友界面
-                    new UsersUI(user.getUsername(), client);
+                    new UsersUI(friends, user.getUserid(), msg.getReceiver(), client);
                 } else {
                     JOptionPane.showMessageDialog(this, msg.getResult());
                 }

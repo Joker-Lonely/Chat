@@ -44,6 +44,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="StartClient2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Client.ui.StartClient" />
+      <module name="Chat" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StartServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Server.ui.StartServer" />
       <module name="Chat" />
@@ -57,6 +64,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.StartClient" />
+      <item itemvalue="Application.StartClient2" />
+      <item itemvalue="Application.StartServer" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.StartClient" />
@@ -75,21 +98,13 @@
       <workItem from="1624780510148" duration="8798000" />
       <workItem from="1624866603476" duration="7652000" />
       <workItem from="1624877340603" duration="714000" />
+      <workItem from="1625022013788" duration="8179000" />
+      <workItem from="1625034931080" duration="786000" />
+      <workItem from="1625053154500" duration="6386000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Server/Socket/ServerThread.java</url>
-          <line>18</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

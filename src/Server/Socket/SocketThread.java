@@ -32,7 +32,7 @@ public class SocketThread {
         return id;
     }
 
-    public void setName(String id) {
+    public void setid(String id) {
         this.id = id;
     }
 }
