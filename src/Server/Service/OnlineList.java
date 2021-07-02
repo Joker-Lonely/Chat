@@ -13,6 +13,10 @@ public class OnlineList {
     public static void addSocket(SocketThread socketThread){
         map.put(socketThread.getid(), socketThread.getSocket());
     }
+    //将用户从列表中剔除
+    public static void deleteUser(SocketThread socketThread){
+        map.remove(socketThread.getid(),socketThread.getSocket());
+    }
     //通过id返回socket
     public static Socket getSocket(String id){
         return map.get(id);

@@ -30,8 +30,8 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     JButton btnSend = new JButton("发送");
     //创建清除按钮
     JButton btnClear = new JButton("清屏");
-    //创建退出按钮
-    JButton btnExit = new JButton("退出");
+    //创建发送文件按钮
+    JButton btnExit = new JButton("发送文件");
 
     //创建消息接收者标签
     //JLabel lblReceiver = new JLabel("谁来接收：");
@@ -47,15 +47,15 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     String[][] rowData = null;
     //创建当前在线列表
     JTable jtbOnline = new JTable
-    (
-            new DefaultTableModel(rowData, colTitles) {
-                //表格不可编辑，只可显示
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            }
-    );
+            (
+                    new DefaultTableModel(rowData, colTitles) {
+                        //表格不可编辑，只可显示
+                        @Override
+                        public boolean isCellEditable(int row, int column) {
+                            return false;
+                        }
+                    }
+            );
 
     //创建聊天消息框的滚动窗
     JScrollPane jspChat = new JScrollPane(jtaChat);
@@ -88,17 +88,17 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         setLayout(null);
 
         //设置按钮大小和位置
-        btnSend.setBounds(20, 600, 100, 60);
-        btnClear.setBounds(140, 600, 100, 60);
-        btnExit.setBounds(260, 600, 100, 60);
+        btnSend.setBounds(350, 620, 60, 30);
+        btnClear.setBounds(425, 620, 60, 30);
+        btnExit.setBounds(10, 415, 100, 30);
 
         //设置标签大小和位置
         //lblReceiver.setBounds(20, 420, 300, 30);
 
         //设置按钮文本的字体
-        btnSend.setFont(new Font("宋体", Font.BOLD, 18));
-        btnClear.setFont(new Font("宋体", Font.BOLD, 18));
-        btnExit.setFont(new Font("宋体", Font.BOLD, 18));
+        btnSend.setFont(new Font("宋体", Font.BOLD, 13));
+        btnClear.setFont(new Font("宋体", Font.BOLD, 13));
+        btnExit.setFont(new Font("宋体", Font.BOLD, 13));
 
         //添加按钮
         this.add(btnSend);
@@ -112,9 +112,11 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //this.add(lblReceiver);
 
         //设置文本输入框大小和位置
-        jtaSay.setBounds(20, 460, 360, 120);
+        jtaSay.setBounds(10, 450, 475, 160);
         //设置文本输入框字体
         jtaSay.setFont(new Font("楷体", Font.BOLD, 16));
+        //输入文本框自动换行
+        jtaSay.setLineWrap(true);
         //添加文本输入框
         this.add(jtaSay);
 
@@ -130,7 +132,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //设置滚动窗的垂直滚动条属性:需要时自动出现
         jspChat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //设置滚动窗大小和位置
-        jspChat.setBounds(20, 20, 360, 400);
+        jspChat.setBounds(10, 10, 475, 400);
         //添加聊天窗口的滚动窗
         this.add(jspChat);
 
@@ -139,7 +141,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //设置滚动窗的垂直滚动条属性:需要时自动出现
         jspOnline.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //设置当前在线列表滚动窗大小和位置
-        jspOnline.setBounds(420, 20, 250, 400);
+        jspOnline.setBounds(500, 10, 170, 640);
         //添加当前在线列表
         this.add(jspOnline);
 
@@ -152,6 +154,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                 CommandTranser msg = new CommandTranser();
                 msg.setCmd("outChatRoom");
                 client.sendData(msg);
+                UsersUI.changestatus();
             }
 
             @Override
@@ -161,6 +164,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                 CommandTranser msg = new CommandTranser();
                 msg.setCmd("outChatRoom");
                 client.sendData(msg);
+                UsersUI.changestatus();
             }
         });
 
@@ -175,9 +179,6 @@ public class ChatRoomUI extends JFrame implements ActionListener {
             //在聊天室打印发送动作的信息
             String s = jtaSay.getText();
             if (s != null && !"".equals(s.trim())) {
-                jtaChat.append(sdf.format(new Date()) + "  " + this.name + ":\n");
-                //显示发送消息
-                jtaChat.append(jtaSay.getText() + "\n\n");
 
                 //向服务器发送聊天信息
                 CommandTranser msg = new CommandTranser();
@@ -188,6 +189,13 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                 // 发送信息完毕 写信息的文本框设空
                 jtaSay.setText(null);
             }
+            else{
+                JOptionPane.showMessageDialog(null, "发送消息不能为空");
+            }
+        }
+        //如果点击清屏按钮
+        if(e.getSource()==btnClear){
+            jtaChat.setText("");
         }
     }
 }

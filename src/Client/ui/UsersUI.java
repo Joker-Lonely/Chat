@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
-import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import javax.swing.*;
@@ -13,23 +13,28 @@ import javax.swing.*;
 import Client.Socket.Client;
 import Com.CommandTranser;
 
+
 /**
  * 列表界面
  */
 public class UsersUI extends JFrame {
     static final long serialVersionUID = 1L;
+    private static boolean status=false;
     JPanel friend_pal;
     JScrollPane jsp;
     static String id;
-    String name;
+    static String name;
     JTabbedPane jtp;
     static Client client;
-    List<String> friends;
+    static HashMap<String, String>  friends;
     JLabel[] friendname;
     //创建一个文字按钮
     JButton ChatRoom = new JButton("进入聊天室");
 
-    public UsersUI(List<String> friends,String id, String name,Client client) {
+    public static void changestatus(){
+        status=false;
+    }
+    public UsersUI(HashMap<String,String> friends,String id, String name,Client client) {
         this.id = id;
         this.name = name;
         this.client = client;
@@ -50,12 +55,15 @@ public class UsersUI extends JFrame {
         jtp = new JTabbedPane();
         jtp.setBounds(0,19,350,550);
         friend_pal = new JPanel();
-        friend_pal.setLayout(new GridLayout(50, 1, 4, 4));
-        friendname = new JLabel[50];
-        for (int i = 0; i < friends.size(); i++) {
-            friendname[i] = new JLabel(friends.get(i), JLabel.CENTER);
-            friendname[i].addMouseListener(new MyMouseListener());
-            friend_pal.add(friendname[i]);
+        friend_pal.setLayout(new GridLayout(friends.size(), 1, 4, 4));
+        friendname = new JLabel[friends.size()];
+        int i = 0;
+        if(friends.isEmpty()==false){
+            for (Map.Entry<String, String> entry : friends.entrySet()) {
+                friendname[i] = new JLabel(entry.getValue(), JLabel.CENTER);
+                friendname[i].addMouseListener(new MyMouseListener());
+                friend_pal.add(friendname[i]);
+            }
         }
         jsp = new JScrollPane(friend_pal);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -70,24 +78,37 @@ public class UsersUI extends JFrame {
     //点击聊天室按钮后，生成聊天室界面并将用户存到聊天室在线用户列表里
     private void actionPerformed(ActionEvent e) {
         if(e.getSource() == ChatRoom){
-            CommandTranser msg = new CommandTranser();
-            msg.setCmd("enterChatRoom");
-            msg.setSender(id);
-            client.sendData(msg);
-            new ChatRoomUI(id, name, client);
+            if(status){
+                JOptionPane.showMessageDialog(null, "你已进入聊天室！");
+            }
+            else{
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("enterChatRoom");
+                msg.setSender(id);
+                msg.setReceiver(name);  //用来显示发送方的用户名
+                client.sendData(msg);
+                new ChatRoomUI(id, name, client);
+                status=true;
+            }
         }
     }
 
     static class MyMouseListener extends MouseAdapter {
-
-
         @Override
         public void mouseClicked(MouseEvent e) {
             // TODO Auto-generated method stub
             // 如果双击了两次 我的好友 弹出与这个好友的聊天框
             if (e.getClickCount() == 2) {
+                String friendid = null;
                 JLabel label = (JLabel) e.getSource();
-                new ChatUI(id, label.getText(), client);
+                if(UsersUI.friends.isEmpty()==false){
+                    for (Map.Entry<String, String> entry : friends.entrySet()) {
+                        if(entry.getValue().equals(label.getText())){
+                            friendid = entry.getKey();
+                        }
+                    }
+                }
+                new ChatUI(id, name, friendid, label.getText(),client);
             }
         }
 

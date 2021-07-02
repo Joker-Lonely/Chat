@@ -3,8 +3,11 @@ package Server.Service;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import Com.NameList;
 import Com.User;
 
 
@@ -100,7 +103,7 @@ public class UserService {
         }
         return true;
     }
-    public String Findusername(User user){
+    public String Findusername(String id){
         String name = "";
         PreparedStatement stmt = null;
         Connection conn =null;
@@ -109,7 +112,7 @@ public class UserService {
         String sql = "select Username from User where Userid=?";
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, user.getUserid());
+            stmt.setString(1, id);
             rs = stmt.executeQuery();
             if (rs.next()) {
                 name = rs.getString(1);
@@ -131,8 +134,22 @@ public class UserService {
         }
         return name;
     }
-    public List<String> getfriends(User user){
-        List<String> friends = new ArrayList<String>();
+    public HashMap<String,String> getname(HashMap<String,String> users){
+        try {
+            if(users.isEmpty()==false){
+                for (Map.Entry<String, String> entry : users.entrySet()) {
+                    entry.setValue(Findusername(entry.getKey()));
+                }
+            }
+            return users;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return users;
+    }
+    public HashMap<String,String> friendsmap(User user){
+        HashMap<String,String> friends = new HashMap<String,String>();
         PreparedStatement stmt = null;
         Connection conn =null;
         ResultSet rs = null;
@@ -143,8 +160,9 @@ public class UserService {
             stmt.setString(1, user.getUserid());
             rs = stmt.executeQuery();
             while(rs.next()){
-                friends.add(rs.getString(1));
+                friends.put(rs.getString(1),"");
             }
+            friends = getname(friends);
             return friends;
         } catch (SQLException e) {
             // TODO Auto-generated catch block
@@ -162,5 +180,4 @@ public class UserService {
         }
         return friends;
     }
-
 }

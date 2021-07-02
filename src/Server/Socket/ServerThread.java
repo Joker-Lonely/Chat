@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import Com.CommandTranser;
 import Com.User;
@@ -31,15 +33,49 @@ public class ServerThread extends Thread {
                 CommandTranser msg = (CommandTranser) ois.readObject();
                 // 处理客户端发送来的信息
                 msg = execute(msg);
+
+                //退出聊天室，踢出聊天室在线列表
+                if("outChatRoom".equals(msg.getCmd())){
+                    SocketThread socketThread=new SocketThread();
+                    socketThread.setid(msg.getSender());
+                    socketThread.setSocket(socket);
+                    OnlineList.deleteUser(socketThread);
+                    oos.writeObject(msg);
+                    oos.flush();
+                }
+                //如果进入聊天室，进入聊天室在线列表
+                if("enterChatRoom".equals(msg.getCmd())){
+                    SocketThread socketThread = new SocketThread();
+                    socketThread.setid(msg.getSender());
+                    socketThread.setSocket(socket);
+                    OnlineList.addSocket(socketThread);
+                    List<String> users = new ArrayList<String>();
+                    for(String s:OnlineList.getHashmap().keySet()){
+                        users.add(s);
+                    }
+                    msg.setData(users);
+                    if(OnlineList.notEmpty()==true){
+                        for(Socket s:OnlineList.getHashmap().values()){
+                            oos=new ObjectOutputStream(s.getOutputStream());
+                            oos.writeObject(msg);
+                            oos.flush();
+                            System.out.println("进入成功");
+                        }
+                    }
+
+                }
                 //如果是群发消息的指令 查询当前在聊天室列表里的用户，
                 if ("allmessage".equals(msg.getCmd())){
                     if(OnlineList.notEmpty()==true){
                         for(Socket s: OnlineList.getHashmap().values()){
                             oos=new ObjectOutputStream(s.getOutputStream());
                             oos.writeObject(msg);
+                            oos.flush();
+                            System.out.println("发送成功");
                         }
                     }
                 }
+
                 if ("message".equals(msg.getCmd())) {
                     /*
                      * 如果 msg.ifFlag即 服务器处理成功,可以向该好友发送信息;如果服务器处理信息失败,信息发送给发送者本人
@@ -50,20 +86,27 @@ public class ServerThread extends Thread {
                     } else {
                         oos = new ObjectOutputStream(socket.getOutputStream());
                     }
+                    oos.writeObject(msg);
+                    oos.flush();
                 }
                 // 如果是登录请求 发送给发送者本人
                 if ("login".equals(msg.getCmd())) {
                     oos = new ObjectOutputStream(socket.getOutputStream());
+                    oos.writeObject(msg);
+                    oos.flush();
                 }
                 if ("checkregist".equals(msg.getCmd())) {
                     System.out.println("验证成功");
                     oos = new ObjectOutputStream(socket.getOutputStream());
+                    oos.writeObject(msg);
+                    oos.flush();
                 }
                 if ("regist".equals(msg.getCmd())) {
                     System.out.println("注册成功");
                     oos = new ObjectOutputStream(socket.getOutputStream());
+                    oos.writeObject(msg);
+                    oos.flush();
                 }
-                oos.writeObject(msg);
             } catch (IOException e) {
                 socket = null;
             } catch (ClassNotFoundException e) {
@@ -107,13 +150,18 @@ public class ServerThread extends Thread {
              */
             if (msg.isFlag()) {
                 // 将该线程加入连接成功的map集合
-                SocketThread socketThread = new SocketThread();
-                socketThread.setid(msg.getSender());
-                socketThread.setSocket(socket);
-                SocketList.addSocket(socketThread);
-                msg.setReceiver(userService.Findusername(user));
-                msg.setData(userService.getfriends(user));
-                msg.setResult("登陆成功");
+                if(SocketList.getSocket(msg.getSender())!=null){
+                    msg.setResult("already");
+                }
+                else{
+                    SocketThread socketThread = new SocketThread();
+                    socketThread.setid(msg.getSender());
+                    socketThread.setSocket(socket);
+                    SocketList.addSocket(socketThread);
+                    msg.setReceiver(userService.Findusername(user.getUserid()));
+                    msg.setData(userService.friendsmap(user));
+                    msg.setResult("登陆成功");
+                }
             } else {
                 msg.setResult("账号密码输入错误！");
             }

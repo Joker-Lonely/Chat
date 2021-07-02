@@ -29,17 +29,21 @@ public class ChatUI extends JFrame implements ActionListener {
     private JTextField message_txt;
     private JButton send_btn;
     private JPanel panel;
-    private String owner;
-    private String friend;
+    private String myid;
+    private String myname;
+    private String friendid;
+    private String friendname;
     private Client client;
     private ClientThread thread;// 接收信息线程
 
-    public ChatUI(String owner, String friend, Client client) {
-        this.owner = owner;
-        this.friend = friend;
+    public ChatUI(String myid, String myname, String friendid, String friendname, Client client) {
+        this.myid = myid;
+        this.myname = myname;
+        this.friendid = friendid;
+        this.friendname = friendname;
         this.client = client;
         init();
-        setTitle("与" + friend + "聊天中");
+        setTitle("与" + friendname + "聊天中");
         setSize(350, 350);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -86,17 +90,16 @@ public class ChatUI extends JFrame implements ActionListener {
         if (e.getSource() == send_btn) {
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-
-            String message = sdf.format(date)+"  "+ owner + " :" + "\n" + message_txt.getText();
+            String message = sdf.format(date)+"  "+ myname + " :" + "\n" + message_txt.getText() + "\n";
             // 在本地文本区追加发送的信息
             chat_txt.append(message);
             // msg为客户端向服务器发送的数据
             CommandTranser msg = new CommandTranser();
             msg.setCmd("message");
-            msg.setSender(owner);
-            msg.setReceiver(friend);
+            msg.setSender(myid);
+            msg.setReceiver(friendid);
             msg.setData(message_txt.getText());
-
+            msg.setResult(myname);//用于传输发送者昵称
             client.sendData(msg);
             // 发送信息完毕 写信息的文本框设空
             message_txt.setText(null);

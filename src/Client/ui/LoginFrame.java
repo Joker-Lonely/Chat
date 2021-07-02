@@ -6,7 +6,7 @@ import Com.User;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.List;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -134,11 +134,16 @@ public class LoginFrame extends JFrame {
             msg = client.getData();
             if (msg != null) {
                 if (msg.isFlag()) {
-                    this.dispose();
-                    List<String> friends = (List<String>) msg.getData();
-                    JOptionPane.showMessageDialog(null, "登陆成功！");
-                    //显示好友界面
-                    new UsersUI(friends, user.getUserid(), msg.getReceiver(), client);
+                    if("already".equals(msg.getResult())){
+                        JOptionPane.showMessageDialog(null, "您已登录");
+                    }else{
+                        this.dispose();
+                        HashMap<String,String> friends = (HashMap<String,String>) msg.getData();
+                        JOptionPane.showMessageDialog(null, "登陆成功！");
+                        //显示好友界面
+                        new UsersUI(friends, user.getUserid(), msg.getReceiver(), client);
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(this, msg.getResult());
                 }

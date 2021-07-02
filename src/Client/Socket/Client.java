@@ -47,6 +47,7 @@ public class Client {
                 return;
             oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(msg);
+            oos.flush();
         } catch (UnknownHostException e1) {
             JOptionPane.showMessageDialog(null, "服务端未开启");
         } catch (IOException e1) {
