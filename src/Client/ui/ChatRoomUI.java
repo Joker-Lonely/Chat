@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ChatRoomUI extends JFrame implements ActionListener {
     private String id;

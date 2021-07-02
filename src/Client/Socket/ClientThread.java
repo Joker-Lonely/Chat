@@ -35,7 +35,7 @@ public class ClientThread extends Thread {
 
     @Override
     public void run() {
-        while (isOnline) {
+        while (isOnline()) {
             //I/O阻塞  接收服务端发送的数据
             CommandTranser msg = client.getData();
             if (msg != null) {
@@ -50,6 +50,8 @@ public class ClientThread extends Thread {
                         String message = sdf.format(date)+"  "+ msg.getResult() + " :" + "\n" + (String) msg.getData() + "\n";
                         // 在聊天框添加收到的信息
                         chat_txt.append(message);
+                        //滚动条拉到最底部，显示最新消息
+                        chat_txt.setCaretPosition(chat_txt.getDocument().getLength());
                     } else {
                         JOptionPane.showMessageDialog(chat_txt, msg.getResult());
                     }
@@ -62,6 +64,7 @@ public class ClientThread extends Thread {
                             + (String) msg.getData() + "\n\n";
                     // 在聊天框添加收到的信息
                     chat_txt.append(message);
+                    chat_txt.setCaretPosition(chat_txt.getDocument().getLength());
                 }
                 else if("enterChatRoom".equals(msg.getCmd())){
                     String message ="--------------------------------------------\n"

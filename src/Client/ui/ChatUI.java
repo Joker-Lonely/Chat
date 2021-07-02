@@ -1,6 +1,6 @@
 package Client.ui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -8,12 +8,7 @@ import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import Client.Socket.Client;
 import Client.Socket.ClientThread;
@@ -44,7 +39,7 @@ public class ChatUI extends JFrame implements ActionListener {
         this.client = client;
         init();
         setTitle("与" + friendname + "聊天中");
-        setSize(350, 350);
+        setSize(350, 325);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
@@ -63,8 +58,16 @@ public class ChatUI extends JFrame implements ActionListener {
         panel.add(send_btn);
         chat_txt = new JTextArea();
         chat_txt.setEditable(false);
+        //创建聊天消息框的滚动窗
+        JScrollPane chat = new JScrollPane(chat_txt);
+        //聊天框不可编辑，只用来显示
+        chat_txt.setEditable(false);
+        //设置滚动窗的水平滚动条属性:不出现
+        chat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        //设置滚动窗的垂直滚动条属性:需要时自动出现
+        chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         chat_txt.add(new JScrollBar(JScrollBar.VERTICAL));
-        add(chat_txt, BorderLayout.CENTER);
+        this.add(chat, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
         send_btn.addActionListener(this);
         // 添加窗口关闭事件
