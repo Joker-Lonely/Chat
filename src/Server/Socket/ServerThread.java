@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import Com.CommandTranser;
@@ -34,6 +35,15 @@ public class ServerThread extends Thread {
                 // 处理客户端发送来的信息
                 msg = execute(msg);
 
+                //打开私聊窗口建立线程
+                if("chat".equals(msg.getCmd())){
+                    SocketThread socketThread = new SocketThread();
+                    String s = (String) msg.getData();
+                    socketThread.setid(s);
+                    socketThread.setSocket(socket);
+                    SocketList.addSocket(socketThread);
+                    msg.setResult("OK");
+                }
                 //退出聊天室，踢出聊天室在线列表
                 if("outChatRoom".equals(msg.getCmd())){
                     SocketThread socketThread=new SocketThread();
@@ -53,7 +63,8 @@ public class ServerThread extends Thread {
                     for(String s:OnlineList.getHashmap().keySet()){
                         users.add(s);
                     }
-                    msg.setData(users);
+                    HashMap<String,String> map = OnlineList.getid();
+                    msg.setData(map);
                     if(OnlineList.notEmpty()==true){
                         for(Socket s:OnlineList.getHashmap().values()){
                             oos=new ObjectOutputStream(s.getOutputStream());
@@ -81,8 +92,8 @@ public class ServerThread extends Thread {
                      * 如果 msg.ifFlag即 服务器处理成功,可以向该好友发送信息;如果服务器处理信息失败,信息发送给发送者本人
                      */
                     if (msg.isFlag()) {
-                        oos = new ObjectOutputStream(SocketList.getSocket(
-                                msg.getReceiver()).getOutputStream());
+                        String s = msg.getReceiver() + msg.getSender().hashCode();
+                        oos = new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
                     } else {
                         oos = new ObjectOutputStream(socket.getOutputStream());
                     }

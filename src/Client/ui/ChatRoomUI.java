@@ -12,12 +12,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 
 public class ChatRoomUI extends JFrame implements ActionListener {
     private String id;
     private String name;
     private Client client;
     private ClientThread thread;// 接收信息线程
+    private HashMap<String,String> online;
     //时间显示格式
     SimpleDateFormat sdf =new SimpleDateFormat("HH:mm:ss");
     //窗口宽度
@@ -63,10 +65,11 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     JScrollPane jspOnline = new JScrollPane(jtbOnline);
 
     //设置默认窗口属性，连接窗口组件
-    public ChatRoomUI(String id, String name, Client client){
+    public ChatRoomUI(String id, String name, Client client, HashMap<String,String> online){
         this.id=id;
         this.name=name;
         this.client=client;
+        this.online=online;
         // 开启客户端接收信息线程
         thread = new ClientThread(client, jtaChat);
         thread.start();

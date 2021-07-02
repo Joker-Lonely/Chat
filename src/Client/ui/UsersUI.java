@@ -87,7 +87,9 @@ public class UsersUI extends JFrame {
                 msg.setSender(id);
                 msg.setReceiver(name);  //用来显示发送方的用户名
                 client.sendData(msg);
-                new ChatRoomUI(id, name, client);
+                msg = client.getData();
+                HashMap<String,String> online = (HashMap<String,String>) msg.getData();
+                new ChatRoomUI(id, name, client, online);
                 status=true;
             }
         }
@@ -108,7 +110,7 @@ public class UsersUI extends JFrame {
                         }
                     }
                 }
-                new ChatUI(id, name, friendid, label.getText(),client);
+                new ChatUI(id, name, friendid, label.getText());
             }
         }
 

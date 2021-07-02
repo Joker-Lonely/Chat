@@ -38,7 +38,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Application.StartClient2">
+  <component name="RunManager" selected="Application.StartClient3">
     <configuration name="StartClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.ui.StartClient" />
       <module name="Chat" />
@@ -115,6 +115,7 @@
       <workItem from="1625225764724" duration="3065000" />
       <workItem from="1625229027029" duration="55000" />
       <workItem from="1625229795564" duration="2089000" />
+      <workItem from="1625232176158" duration="6426000" />
     </task>
     <servers />
   </component>

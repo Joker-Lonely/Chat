@@ -3,6 +3,7 @@ package Server.Service;
 import Server.Socket.SocketThread;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 
 public class OnlineList {
     private static HashMap<String, Socket> map=new HashMap<String, Socket>();//id和socket
@@ -28,5 +29,16 @@ public class OnlineList {
         }else{
             return true;
         }
+    }
+    public static HashMap<String, String> getid(){
+        HashMap<String, String> list = new HashMap<String,String>();
+        if(map.isEmpty()==false){
+            for (Map.Entry<String, Socket> entry : map.entrySet()) {
+                list.put(entry.getKey(),"");
+            }
+        }
+        UserService userservice = new UserService();
+        list = userservice.getname(list);
+        return list;
     }
 }

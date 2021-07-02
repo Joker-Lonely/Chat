@@ -31,12 +31,19 @@ public class ChatUI extends JFrame implements ActionListener {
     private Client client;
     private ClientThread thread;// 接收信息线程
 
-    public ChatUI(String myid, String myname, String friendid, String friendname, Client client) {
+    public ChatUI(String myid, String myname, String friendid, String friendname) {
         this.myid = myid;
         this.myname = myname;
         this.friendid = friendid;
         this.friendname = friendname;
-        this.client = client;
+        this.client = new Client();
+
+        CommandTranser msg = new CommandTranser();
+        msg.setCmd("chat");
+        msg.setData(myid+friendid.hashCode());//将线程用户名置为myid+friendid.hashCode()进行区分
+        msg.setSender(myid);
+        client.sendData(msg);
+
         init();
         setTitle("与" + friendname + "聊天中");
         setSize(350, 325);
