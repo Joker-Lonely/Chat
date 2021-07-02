@@ -14,8 +14,8 @@ public class SocketList {
     public static void addSocket(SocketThread socketThread){
         map.put(socketThread.getid(), socketThread.getSocket());
     }
-    //通过昵称返回socket
-    public static Socket getSocket(String name){
-        return map.get(name);
+    //通过id返回socket
+    public static Socket getSocket(String id){
+        return map.get(id);
     }
 }

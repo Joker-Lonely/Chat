@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import Com.CommandTranser;
 import Com.User;
+import Server.Service.OnlineList;
 import Server.Service.UserService;
 
 /**
@@ -30,6 +31,15 @@ public class ServerThread extends Thread {
                 CommandTranser msg = (CommandTranser) ois.readObject();
                 // 处理客户端发送来的信息
                 msg = execute(msg);
+                //如果是群发消息的指令 查询当前在聊天室列表里的用户，
+                if ("allmessage".equals(msg.getCmd())){
+                    if(OnlineList.notEmpty()==true){
+                        for(Socket s: OnlineList.getHashmap().values()){
+                            oos=new ObjectOutputStream(s.getOutputStream());
+                            oos.writeObject(msg);
+                        }
+                    }
+                }
                 if ("message".equals(msg.getCmd())) {
                     /*
                      * 如果 msg.ifFlag即 服务器处理成功,可以向该好友发送信息;如果服务器处理信息失败,信息发送给发送者本人
@@ -119,6 +129,7 @@ public class ServerThread extends Thread {
                 msg.setResult("当前用户不在线");
             }
         }
+
 
         return msg;
     }

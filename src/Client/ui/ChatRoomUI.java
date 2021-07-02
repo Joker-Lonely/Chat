@@ -1,12 +1,16 @@
 package Client.ui;
 
 import Client.Socket.Client;
+import Client.Socket.ClientThread;
+import Com.CommandTranser;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +18,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     private String id;
     private String name;
     private Client client;
+    private ClientThread thread;// 接收信息线程
     //时间显示格式
     SimpleDateFormat sdf =new SimpleDateFormat("HH:mm:ss");
     //窗口宽度
@@ -63,6 +68,9 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         this.id=id;
         this.name=name;
         this.client=client;
+        // 开启客户端接收信息线程
+        thread = new ClientThread(client, jtaChat);
+        thread.start();
         init();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -135,20 +143,51 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //添加当前在线列表
         this.add(jspOnline);
 
+        // 添加窗口关闭事件
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO Auto-generated method stub
+                thread.setOnline(false);
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("outChatRoom");
+                client.sendData(msg);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO Auto-generated method stub
+                thread.setOnline(false);
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("outChatRoom");
+                client.sendData(msg);
+            }
+        });
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         //如果点击了发送按钮
-        if(e.getSource()==btnSend){
+        if(e.getSource()==btnSend) {
             //滚动条拉到最底部，显示最新消息
             jtaChat.setCaretPosition(jtaChat.getDocument().getLength());
             //在聊天室打印发送动作的信息
-            jtaChat.append(sdf.format(new Date())+"  "+this.name+":\n");
-            //显示发送消息
-            jtaChat.append(jtaSay.getText()+"\n\n");
-            //向服务器发送聊天信息
+            String s = jtaSay.getText();
+            if (s != null && !"".equals(s.trim())) {
+                jtaChat.append(sdf.format(new Date()) + "  " + this.name + ":\n");
+                //显示发送消息
+                jtaChat.append(jtaSay.getText() + "\n\n");
 
+                //向服务器发送聊天信息
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("allmessage");
+                msg.setSender(id);
+                msg.setData(jtaSay.getText());
+                client.sendData(msg);
+                // 发送信息完毕 写信息的文本框设空
+                jtaSay.setText(null);
+            }
         }
     }
 }

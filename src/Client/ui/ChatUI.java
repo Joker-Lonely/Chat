@@ -85,10 +85,9 @@ public class ChatUI extends JFrame implements ActionListener {
         // 如果点击了发送按钮
         if (e.getSource() == send_btn) {
             Date date = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 
-            String message = "你说：" + message_txt.getText() + "\t"
-                    + sdf.format(date) + "\n";
+            String message = sdf.format(date)+"  "+ owner + " :" + "\n" + message_txt.getText();
             // 在本地文本区追加发送的信息
             chat_txt.append(message);
             // msg为客户端向服务器发送的数据

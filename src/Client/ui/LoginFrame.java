@@ -106,7 +106,7 @@ public class LoginFrame extends JFrame {
         setLayout(null);
         setVisible(true);
 
-        textUid.setText("test1");
+        textUid.setText("test01");
         textPsw.setText("123456");
     }
 

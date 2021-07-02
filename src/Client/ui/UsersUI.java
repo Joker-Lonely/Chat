@@ -11,6 +11,7 @@ import java.util.Random;
 import javax.swing.*;
 
 import Client.Socket.Client;
+import Com.CommandTranser;
 
 /**
  * 列表界面
@@ -66,8 +67,13 @@ public class UsersUI extends JFrame {
         ChatRoom.addActionListener(this::actionPerformed);
     }
 
+    //点击聊天室按钮后，生成聊天室界面并将用户存到聊天室在线用户列表里
     private void actionPerformed(ActionEvent e) {
         if(e.getSource() == ChatRoom){
+            CommandTranser msg = new CommandTranser();
+            msg.setCmd("enterChatRoom");
+            msg.setSender(id);
+            client.sendData(msg);
             new ChatRoomUI(id, name, client);
         }
     }
