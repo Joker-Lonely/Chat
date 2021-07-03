@@ -1,5 +1,6 @@
 package Client.ui;
 
+import Client.Func.Chatlist;
 import Client.Socket.Client;
 import Com.CommandTranser;
 import Com.User;
@@ -139,6 +140,7 @@ public class LoginFrame extends JFrame {
                     }else{
                         this.dispose();
                         HashMap<String,String> friends = (HashMap<String,String>) msg.getData();
+                        Chatlist.init(friends);
                         JOptionPane.showMessageDialog(null, "登陆成功！");
                         //显示好友界面
                         new UsersUI(friends, user.getUserid(), msg.getReceiver(), client);

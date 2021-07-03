@@ -18,4 +18,7 @@ public class SocketList {
     public static Socket getSocket(String id){
         return map.get(id);
     }
+    public static void deletesocket(SocketThread socketThread){
+        map.remove(socketThread.getid(),socketThread.getSocket());
+    }
 }

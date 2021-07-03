@@ -32,13 +32,13 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="D:/mysql-8.0.23-winx64/mysql-connector-java-8.0.25.jar" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/Chat-main" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Application.StartClient3">
+  <component name="RunManager" selected="Application.StartClient2">
     <configuration name="StartClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.ui.StartClient" />
       <module name="Chat" />
@@ -116,6 +116,12 @@
       <workItem from="1625229027029" duration="55000" />
       <workItem from="1625229795564" duration="2089000" />
       <workItem from="1625232176158" duration="6426000" />
+      <workItem from="1625284426474" duration="2568000" />
+      <workItem from="1625287079404" duration="414000" />
+      <workItem from="1625296548810" duration="10640000" />
+      <workItem from="1625307342955" duration="182000" />
+      <workItem from="1625307541812" duration="4899000" />
+      <workItem from="1625313335810" duration="2315000" />
     </task>
     <servers />
   </component>

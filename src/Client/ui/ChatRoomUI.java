@@ -5,6 +5,7 @@ import Client.Socket.ClientThread;
 import Com.CommandTranser;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 public class ChatRoomUI extends JFrame implements ActionListener {
     private String id;
@@ -43,11 +46,11 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     //创建聊天消息框
     JTextArea jtaChat = new JTextArea();
     //当前在线列表的列标题
-    String[] colTitles = {"昵称"};
+    static String[] colTitles = {"昵称"};
     //当前在线列表的数据
-    String[][] rowData = null;
+    static String[][] rowData = null;
     //创建当前在线列表
-    JTable jtbOnline = new JTable
+    static JTable jtbOnline = new JTable
             (
                     new DefaultTableModel(rowData, colTitles) {
                         //表格不可编辑，只可显示
@@ -58,6 +61,19 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                     }
             );
 
+    public static void print(HashMap<String,String> hashmap){
+        DefaultTableModel dtm=(DefaultTableModel) jtbOnline.getModel();
+        dtm.setRowCount(0);//设置成0
+        try {
+            for (Map.Entry<String, String> entry : hashmap.entrySet()) {
+                Vector v=new Vector();
+                v.add(entry.getValue());
+                dtm.addRow(v);
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
     //创建聊天消息框的滚动窗
     JScrollPane jspChat = new JScrollPane(jtaChat);
 
@@ -128,6 +144,8 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         jtaChat.setEditable(false);
         //设置聊天框字体
         jtaChat.setFont(new Font("楷体", Font.BOLD, 16));
+        //打印欢迎语
+        jtaChat.append("     *********  登录成功，欢迎来到聊天室！  *********     \n");
 
         //设置滚动窗的水平滚动条属性:不出现
         jspChat.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -144,6 +162,12 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         jspOnline.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //设置当前在线列表滚动窗大小和位置
         jspOnline.setBounds(500, 10, 170, 640);
+        //在线列表初始化
+        print(online);
+        //将在线列表数据居中显示
+        DefaultTableCellRenderer r=new DefaultTableCellRenderer();
+        r.setHorizontalAlignment(JLabel.CENTER);
+        jtbOnline.setDefaultRenderer(Object.class, r);
         //添加当前在线列表
         this.add(jspOnline);
 
@@ -154,19 +178,17 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                 // TODO Auto-generated method stub
                 thread.setOnline(false);
                 CommandTranser msg = new CommandTranser();
+                msg.setSender(id);
+                msg.setReceiver(name);  //用来显示发送方的用户名
                 msg.setCmd("outChatRoom");
                 client.sendData(msg);
-                UsersUI.changestatus();
+                UsersUI.status=false;
             }
 
             @Override
             public void windowClosed(WindowEvent e) {
                 // TODO Auto-generated method stub
                 thread.setOnline(false);
-                CommandTranser msg = new CommandTranser();
-                msg.setCmd("outChatRoom");
-                client.sendData(msg);
-                UsersUI.changestatus();
             }
         });
 
@@ -186,6 +208,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
                 CommandTranser msg = new CommandTranser();
                 msg.setCmd("allmessage");
                 msg.setSender(id);
+                msg.setReceiver(name);  //用来显示发送方的用户名
                 msg.setData(jtaSay.getText());
                 client.sendData(msg);
                 // 发送信息完毕 写信息的文本框设空

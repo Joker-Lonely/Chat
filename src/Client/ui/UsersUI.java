@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.swing.*;
 
+import Client.Func.Chatlist;
 import Client.Socket.Client;
 import Com.CommandTranser;
 
@@ -19,7 +20,7 @@ import Com.CommandTranser;
  */
 public class UsersUI extends JFrame {
     static final long serialVersionUID = 1L;
-    private static boolean status=false;
+    public static boolean status=false;
     JPanel friend_pal;
     JScrollPane jsp;
     static String id;
@@ -95,6 +96,14 @@ public class UsersUI extends JFrame {
         }
     }
 
+    public static void openchat(String friendid, String friendname){
+        if(Chatlist.getstatus(friendid)!=null){
+            if(!Chatlist.getstatus(friendid)){
+                new ChatUI(id, name, friendid, friendname);
+            }
+        }
+    }
+
     static class MyMouseListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -110,7 +119,7 @@ public class UsersUI extends JFrame {
                         }
                     }
                 }
-                new ChatUI(id, name, friendid, label.getText());
+                UsersUI.openchat(friendid, label.getText());
             }
         }
 

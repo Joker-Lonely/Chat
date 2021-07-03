@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.swing.*;
 
+import Client.Func.Chatlist;
 import Client.Socket.Client;
 import Client.Socket.ClientThread;
 import Com.CommandTranser;
@@ -37,7 +38,7 @@ public class ChatUI extends JFrame implements ActionListener {
         this.friendid = friendid;
         this.friendname = friendname;
         this.client = new Client();
-
+        Chatlist.setstatus(friendid,true);
         CommandTranser msg = new CommandTranser();
         msg.setCmd("chat");
         msg.setData(myid+friendid.hashCode());//将线程用户名置为myid+friendid.hashCode()进行区分
@@ -77,17 +78,18 @@ public class ChatUI extends JFrame implements ActionListener {
         this.add(chat, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
         send_btn.addActionListener(this);
-        // 添加窗口关闭事件
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 // TODO Auto-generated method stub
+                closechat();
                 thread.setOnline(false);
             }
 
             @Override
             public void windowClosed(WindowEvent e) {
                 // TODO Auto-generated method stub
+                Chatlist.setstatus(friendid,false);
                 thread.setOnline(false);
             }
         });
@@ -114,6 +116,15 @@ public class ChatUI extends JFrame implements ActionListener {
             // 发送信息完毕 写信息的文本框设空
             message_txt.setText(null);
         }
+    }
+    //窗口结束工作
+    public void closechat()
+    {
+        Chatlist.setstatus(friendid,false);
+        CommandTranser msg = new CommandTranser();
+        msg.setCmd("closechat");
+        msg.setSender(myid+friendid.hashCode());
+        client.sendData(msg);
     }
 
 }

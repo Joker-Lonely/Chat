@@ -1,10 +1,12 @@
 package Client.Socket;
 
+import Client.ui.ChatRoomUI;
 import Com.CommandTranser;
 
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -60,28 +62,29 @@ public class ClientThread extends Thread {
                     Date date = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat(
                             "HH:mm:ss");
-                    String message = sdf.format(date)+" "+msg.getSender() + ":\n"
+                    String message = sdf.format(date)+" "+msg.getReceiver() + ":\n"
                             + (String) msg.getData() + "\n\n";
                     // 在聊天框添加收到的信息
                     chat_txt.append(message);
                     chat_txt.setCaretPosition(chat_txt.getDocument().getLength());
                 }
                 else if("enterChatRoom".equals(msg.getCmd())){
-                    String message ="--------------------------------------------\n"
-                            +msg.getReceiver() + "进入了聊天室"
-                            +"\n--------------------------------------------\n";
+                    String message =">>>" +msg.getReceiver() + "进入了聊天室"
+                            +">>>\n";
                     //在聊天室显示
                     chat_txt.append(message);
+                    //
+                    ChatRoomUI.print((HashMap<String, String>) msg.getData());
                 }
                 else if("outChatRoom".equals(msg.getCmd())){
-                    String message ="\n--------------------------------------------\n"
-                            +msg.getReceiver() + "退出了聊天室"
-                            +"\n--------------------------------------------\n";
+                    String message ="<<<" +msg.getReceiver() + "退出了聊天室" +"<<<\n";
                     //在聊天室显示
                     chat_txt.append(message);
+                    //
+                    HashMap<String, String> map= (HashMap<String, String>)msg.getData();
+                    map.remove(msg.getSender());
+                    ChatRoomUI.print(map);
                 }
-
-
             }
         }
     }

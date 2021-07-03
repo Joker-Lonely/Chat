@@ -35,6 +35,23 @@ public class ServerThread extends Thread {
                 // 处理客户端发送来的信息
                 msg = execute(msg);
 
+
+                //主程序退出
+                if("close".equals(msg.getCmd())){
+                    SocketThread socketThread=new SocketThread();
+                    socketThread.setid(msg.getSender());
+                    socketThread.setSocket(socket);
+                    SocketList.deletesocket(socketThread);
+                }
+
+                //关闭私聊连接
+                if("closechat".equals(msg.getCmd())){
+                    SocketThread socketThread=new SocketThread();
+                    socketThread.setid(msg.getSender());
+                    socketThread.setSocket(socket);
+                    SocketList.deletesocket(socketThread);
+                }
+
                 //打开私聊窗口建立线程
                 if("chat".equals(msg.getCmd())){
                     SocketThread socketThread = new SocketThread();
@@ -46,43 +63,38 @@ public class ServerThread extends Thread {
                 }
                 //退出聊天室，踢出聊天室在线列表
                 if("outChatRoom".equals(msg.getCmd())){
-                    SocketThread socketThread=new SocketThread();
-                    socketThread.setid(msg.getSender());
-                    socketThread.setSocket(socket);
-                    OnlineList.deleteUser(socketThread);
-                    oos.writeObject(msg);
-                    oos.flush();
+                    HashMap<String,String> map = OnlineList.getid();
+                    msg.setData(map);
+                    if(!OnlineList.getList().isEmpty())
+                    {
+                        for(String s: OnlineList.getList()){
+                            oos=new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
+                            oos.writeObject(msg);
+                            oos.flush();
+                        }
+                    }
+                    OnlineList.deleteUser(msg.getSender());
                 }
                 //如果进入聊天室，进入聊天室在线列表
                 if("enterChatRoom".equals(msg.getCmd())){
-                    SocketThread socketThread = new SocketThread();
-                    socketThread.setid(msg.getSender());
-                    socketThread.setSocket(socket);
-                    OnlineList.addSocket(socketThread);
-                    List<String> users = new ArrayList<String>();
-                    for(String s:OnlineList.getHashmap().keySet()){
-                        users.add(s);
-                    }
+                    OnlineList.addUser(msg.getSender());
                     HashMap<String,String> map = OnlineList.getid();
                     msg.setData(map);
-                    if(OnlineList.notEmpty()==true){
-                        for(Socket s:OnlineList.getHashmap().values()){
-                            oos=new ObjectOutputStream(s.getOutputStream());
-                            oos.writeObject(msg);
-                            oos.flush();
-                            System.out.println("进入成功");
-                        }
-                    }
 
+                    for(String s: OnlineList.getList()){
+                        System.out.println("OK");
+                        oos=new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
+                        oos.writeObject(msg);
+                        oos.flush();
+                    }
                 }
                 //如果是群发消息的指令 查询当前在聊天室列表里的用户，
                 if ("allmessage".equals(msg.getCmd())){
                     if(OnlineList.notEmpty()==true){
-                        for(Socket s: OnlineList.getHashmap().values()){
-                            oos=new ObjectOutputStream(s.getOutputStream());
+                        for(String s: OnlineList.getList()){
+                            oos=new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
                             oos.writeObject(msg);
                             oos.flush();
-                            System.out.println("发送成功");
                         }
                     }
                 }
@@ -93,7 +105,11 @@ public class ServerThread extends Thread {
                      */
                     if (msg.isFlag()) {
                         String s = msg.getReceiver() + msg.getSender().hashCode();
-                        oos = new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
+                        if(SocketList.getSocket(s)!=null){
+                            oos = new ObjectOutputStream(SocketList.getSocket(s).getOutputStream());
+                        } else {
+                            oos = new ObjectOutputStream(SocketList.getSocket(msg.getReceiver()).getOutputStream());
+                        }
                     } else {
                         oos = new ObjectOutputStream(socket.getOutputStream());
                     }
