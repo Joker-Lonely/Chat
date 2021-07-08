@@ -140,6 +140,7 @@ public class LoginFrame extends JFrame {
                     }else{
                         this.dispose();
                         HashMap<String,String> friends = (HashMap<String,String>) msg.getData();
+                        HashMap<String,Boolean> friendsonline = (HashMap<String,Boolean>) msg.getData2();
                         Chatlist.init(friends);
                         JOptionPane.showMessageDialog(null, "登陆成功！");
                         //显示好友界面

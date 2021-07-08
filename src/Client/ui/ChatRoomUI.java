@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
     //创建清除按钮
     JButton btnClear = new JButton("清屏");
     //创建发送文件按钮
-    JButton btnExit = new JButton("发送文件");
+    JButton btnFile = new JButton("发送文件");
 
     //创建消息接收者标签
     //JLabel lblReceiver = new JLabel("谁来接收：");
@@ -108,7 +109,7 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //设置按钮大小和位置
         btnSend.setBounds(350, 620, 60, 30);
         btnClear.setBounds(425, 620, 60, 30);
-        btnExit.setBounds(10, 415, 100, 30);
+        btnFile.setBounds(10, 415, 100, 30);
 
         //设置标签大小和位置
         //lblReceiver.setBounds(20, 420, 300, 30);
@@ -116,16 +117,16 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //设置按钮文本的字体
         btnSend.setFont(new Font("宋体", Font.BOLD, 13));
         btnClear.setFont(new Font("宋体", Font.BOLD, 13));
-        btnExit.setFont(new Font("宋体", Font.BOLD, 13));
+        btnFile.setFont(new Font("宋体", Font.BOLD, 13));
 
         //添加按钮
         this.add(btnSend);
         this.add(btnClear);
-        this.add(btnExit);
+        this.add(btnFile);
 
         btnSend.addActionListener(this);
         btnClear.addActionListener(this);
-        btnExit.addActionListener(this);
+        btnFile.addActionListener(this);
         //添加标签
         //this.add(lblReceiver);
 
@@ -221,6 +222,26 @@ public class ChatRoomUI extends JFrame implements ActionListener {
         //如果点击清屏按钮
         if(e.getSource()==btnClear){
             jtaChat.setText("");
+        }
+        //如果点击发送文件功能
+        if(e.getSource()==btnFile){
+            JFileChooser f = new JFileChooser();
+            //设置默认显示的文件夹（不用设置，测试时图方便）
+            f.setCurrentDirectory(new File("F:\\test"));
+            //设置既可以选择文件也可以选择文件夹
+            f.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            //处理选择
+            int result=f.showOpenDialog(null);
+            if(result==JFileChooser.APPROVE_OPTION){
+                File file = f.getSelectedFile();
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("fileTransfer");
+                msg.setSender(id);
+                msg.setReceiver(name);  //用来显示发送方的用户名
+                msg.setData(file);
+                client.sendData(msg);
+            }
+
         }
     }
 }

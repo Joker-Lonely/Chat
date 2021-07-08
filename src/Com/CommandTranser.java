@@ -10,6 +10,7 @@ public class CommandTranser implements Serializable{
     private String sender=null;//发送者
     private String receiver=null;//接受者
     private Object data=null;//传递的数据
+    private Object data2=null;//传递的数据2
     private boolean flag=false;//指令的处理结果
     private String cmd=null;//服务端要做的指令
     private String result=null;//处理结果
@@ -31,6 +32,12 @@ public class CommandTranser implements Serializable{
     }
     public void setData(Object data) {
         this.data = data;
+    }
+    public Object getData2() {
+        return data2;
+    }
+    public void setData2(Object data) {
+        this.data2 = data;
     }
     public boolean isFlag() {
         return flag;

@@ -99,7 +99,7 @@ public class UserService {
         }
         return true;
     }
-    public String Findusername(String id){
+    public static String Findusername(String id){
         String name = "";
         PreparedStatement stmt = null;
         Connection conn =null;
@@ -130,7 +130,7 @@ public class UserService {
         }
         return name;
     }
-    public HashMap<String,String> getname(HashMap<String,String> users){
+    public static HashMap<String,String> getname(HashMap<String, String> users){
         try {
             if(users.isEmpty()==false){
                 for (Map.Entry<String, String> entry : users.entrySet()) {
@@ -144,7 +144,7 @@ public class UserService {
         }
         return users;
     }
-    public HashMap<String,String> friendsmap(User user){
+    public static HashMap<String,String> friendsmap(String id){
         HashMap<String,String> friends = new HashMap<String,String>();
         PreparedStatement stmt = null;
         Connection conn =null;
@@ -153,7 +153,7 @@ public class UserService {
         String sql = "select friend_id from friend_list where id=?";
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, user.getUserid());
+            stmt.setString(1, id);
             rs = stmt.executeQuery();
             while(rs.next()){
                 friends.put(rs.getString(1),"");
@@ -175,5 +175,57 @@ public class UserService {
             }
         }
         return friends;
+    }
+    public static Boolean addfriend(String id, String friendid){
+        PreparedStatement stmt = null;
+        Connection conn =null;
+        Boolean rs = false;
+        conn = DBHelper.getConnection();
+        String sql = "insert into friend_list (id, friend_id) values ( ? , ?)";
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            stmt.setString(2, friendid);
+            rs = stmt.execute();
+            return rs;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    public static Boolean deletefriend(String id, String friendid){
+        PreparedStatement stmt = null;
+        Connection conn =null;
+        Boolean rs = false;
+        conn = DBHelper.getConnection();
+        String sql = "delete from friend_list where id=? AND friend_id=? ";
+        try {
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, id);
+            stmt.setString(2, friendid);
+            rs = stmt.execute();
+            return rs;
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

@@ -38,7 +38,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Application.StartClient2">
+  <component name="RunManager" selected="Application.StartClient3">
     <configuration name="StartClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.ui.StartClient" />
       <module name="Chat" />
@@ -66,7 +66,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StartServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="StartServer" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Server.ui.StartServer" />
       <module name="Chat" />
       <extension name="coverage">
@@ -79,16 +79,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.StartClient2" />
       <item itemvalue="Application.StartClient3" />
-      <item itemvalue="Application.StartClient" />
       <item itemvalue="Application.StartServer" />
+      <item itemvalue="Application.StartClient" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.StartClient" />
-        <item itemvalue="Application.StartServer" />
       </list>
     </recent_temporary>
   </component>
@@ -122,6 +132,10 @@
       <workItem from="1625307342955" duration="182000" />
       <workItem from="1625307541812" duration="4899000" />
       <workItem from="1625313335810" duration="2315000" />
+      <workItem from="1625471381963" duration="12124000" />
+      <workItem from="1625483857687" duration="11464000" />
+      <workItem from="1625497247045" duration="1309000" />
+      <workItem from="1625702766498" duration="2403000" />
     </task>
     <servers />
   </component>

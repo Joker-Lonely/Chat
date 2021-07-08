@@ -10,6 +10,9 @@ import java.util.HashMap;
 
 public class SocketList {
     private static HashMap<String, Socket> map=new HashMap<String, Socket>();
+    public  static HashMap<String, Socket> getMap(){
+        return map;
+    }
     //将SocketThread入集合
     public static void addSocket(SocketThread socketThread){
         map.put(socketThread.getid(), socketThread.getSocket());

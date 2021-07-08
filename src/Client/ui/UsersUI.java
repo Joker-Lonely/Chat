@@ -1,9 +1,7 @@
 package Client.ui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,16 +19,16 @@ import Com.CommandTranser;
 public class UsersUI extends JFrame {
     static final long serialVersionUID = 1L;
     public static boolean status=false;
-    JPanel friend_pal;
-    JScrollPane jsp;
+    static JPanel friend_pal;
+    static JScrollPane jsp;
     static String id;
     static String name;
-    JTabbedPane jtp;
+    static JTabbedPane jtp;
     static Client client;
-    static HashMap<String, String>  friends;
-    JLabel[] friendname;
+    public static HashMap<String, String>  friends;
+    static JLabel[] friendname;
     //创建一个文字按钮
-    JButton ChatRoom = new JButton("进入聊天室");
+    static JButton ChatRoom = new JButton("进入聊天室");
 
     public static void changestatus(){
         status=false;
@@ -41,6 +39,28 @@ public class UsersUI extends JFrame {
         this.client = client;
         this.friends = friends;
         init();
+
+        ChatRoom.setBounds(0, 0, 95, 20);
+        this.add(ChatRoom);
+        //监听按钮
+        ChatRoom.addActionListener(this::actionPerformed);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO Auto-generated method stub
+                CommandTranser msg = new CommandTranser();
+                msg.setCmd("close");
+                msg.setSender(id);
+                client.sendData(msg);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
         setTitle("Hi," + name);
         setSize(350, 600);
         setLocation(1100, 100);
@@ -48,10 +68,9 @@ public class UsersUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
-        //设置位置、大小
     }
 
-    private void init() {
+    public void init() {
         // TODO Auto-generated method stub
         jtp = new JTabbedPane();
         jtp.setBounds(0,19,350,550);
@@ -64,17 +83,84 @@ public class UsersUI extends JFrame {
                 friendname[i] = new JLabel(entry.getValue(), JLabel.CENTER);
                 friendname[i].addMouseListener(new MyMouseListener());
                 friend_pal.add(friendname[i]);
+                String labelid = entry.getKey();
+                //添加右键菜单
+                JPopupMenu popupMenu = new JPopupMenu(labelid);
+                addPopup(friendname[i], popupMenu);
+                JMenuItem mntmNewMenuItem = new JMenuItem("删除好友");
+                popupMenu.add(mntmNewMenuItem);
+                //给菜单中的项目添加监听
+                mntmNewMenuItem.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        CommandTranser msg = new CommandTranser();
+                        msg.setCmd("deletefriend");
+                        msg.setSender(id);
+                        msg.setReceiver(labelid);
+                        client.sendData(msg);
+                    }
+                });
             }
         }
         jsp = new JScrollPane(friend_pal);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         jtp.add("我的好友", jsp);
         add(jtp);
-        ChatRoom.setBounds(0, 0, 95, 20);
-        this.add(ChatRoom);
-        //监听登录按钮
-        ChatRoom.addActionListener(this::actionPerformed);
     }
+    /*public static void reprint(){
+        friend_pal.removeAll();
+        jtp = new JTabbedPane();
+        jtp.setBounds(0,19,350,550);
+        friend_pal = new JPanel();
+        friend_pal.setLayout(new GridLayout(friends.size(), 1, 4, 4));
+        friendname = new JLabel[friends.size()];
+        int i = 0;
+        if(friends.isEmpty()==false){
+            for (Map.Entry<String, String> entry : friends.entrySet()) {
+                friendname[i] = new JLabel(entry.getValue(), JLabel.CENTER);
+                friendname[i].addMouseListener(new MyMouseListener());
+                friend_pal.add(friendname[i]);
+                String labelid = entry.getKey();
+                //添加右键菜单
+                JPopupMenu popupMenu = new JPopupMenu(labelid);
+                addPopup(friendname[i], popupMenu);
+                JMenuItem mntmNewMenuItem = new JMenuItem("删除好友");
+                popupMenu.add(mntmNewMenuItem);
+                //给菜单中的项目添加监听
+                mntmNewMenuItem.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        CommandTranser msg = new CommandTranser();
+                        msg.setCmd("deletefriend");
+                        msg.setSender(id);
+                        msg.setReceiver(labelid);
+                        client.sendData(msg);
+                    }
+                });
+            }
+        }
+        jsp = new JScrollPane(friend_pal);
+        jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        jtp.add("我的好友", jsp);
+        jsp.add(jtp);
+        jsp.updateUI();
+    }*/
+    private static void addPopup(Component component, final JPopupMenu popup) {
+        component.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
+            }
+            private void showMenu(MouseEvent e) {
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+    }
+
 
     //点击聊天室按钮后，生成聊天室界面并将用户存到聊天室在线用户列表里
     private void actionPerformed(ActionEvent e) {

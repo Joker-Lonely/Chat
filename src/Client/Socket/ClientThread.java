@@ -1,16 +1,17 @@
 package Client.Socket;
 
+import Client.Func.FileTransfer;
 import Client.ui.ChatRoomUI;
+import Client.ui.UsersUI;
 import Com.CommandTranser;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-
+import javax.swing.*;
 
 
 /**
@@ -49,7 +50,7 @@ public class ClientThread extends Thread {
                     if (msg.isFlag()) {
                         Date date = new Date();
                         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-                        String message = sdf.format(date)+"  "+ msg.getResult() + " :" + "\n" + (String) msg.getData() + "\n";
+                        String message = sdf.format(date)+"  "+ msg.getResult() + " :" + "\n" + (String) msg.getData() + "\n\n";
                         // 在聊天框添加收到的信息
                         chat_txt.append(message);
                         //滚动条拉到最底部，显示最新消息
@@ -75,6 +76,7 @@ public class ClientThread extends Thread {
                     chat_txt.append(message);
                     //
                     ChatRoomUI.print((HashMap<String, String>) msg.getData());
+                    chat_txt.setCaretPosition(chat_txt.getDocument().getLength());
                 }
                 else if("outChatRoom".equals(msg.getCmd())){
                     String message ="<<<" +msg.getReceiver() + "退出了聊天室" +"<<<\n";
@@ -84,7 +86,34 @@ public class ClientThread extends Thread {
                     HashMap<String, String> map= (HashMap<String, String>)msg.getData();
                     map.remove(msg.getSender());
                     ChatRoomUI.print(map);
+                    chat_txt.setCaretPosition(chat_txt.getDocument().getLength());
                 }
+                else if("fileTransfer".equals(msg.getCmd())){
+                    int result=JOptionPane.showConfirmDialog(null,"是否接收？");
+                    if(result==JOptionPane.YES_OPTION){
+                        //获取下载路径
+                        JFileChooser f = new JFileChooser();
+                        //设置默认显示的文件夹（不用设置，测试时图方便）
+                        f.setCurrentDirectory(new File("F:\\test2"));
+                        //设置只可以选择文件夹
+                        f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                        int result1=f.showOpenDialog(null);
+                        if(result1==JFileChooser.APPROVE_OPTION){
+                            File file = f.getSelectedFile();
+                            new FileTransfer((File)(msg.getData()),file);
+                            JOptionPane.showMessageDialog(chat_txt, "下载完成！");
+                        }
+                    }
+                }
+                /*else if("reprintusers".equals(msg.getCmd())){
+                    String status = (String) msg.getData();
+                    if("deletfriend".equals(status)){
+                        UsersUI.friends.remove(msg.getSender());
+                        UsersUI.friends.remove(msg.getReceiver());
+                        UsersUI.reprint();
+                    }
+
+                }*/
             }
         }
     }
